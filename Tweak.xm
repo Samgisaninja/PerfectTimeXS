@@ -284,15 +284,14 @@ static NSMutableAttributedString* getTimeStr(NSDate *nowDate)
 @end
 
 %hook _UIStatusBarStringView
+
 - (void) applyStyleAttributes : (id) arg1 {
     if (self.text != nil && [self.text containsString : @":"])
     {
         if (kCFCoreFoundationVersionNumber >= 1443.00 && kCFCoreFoundationVersionNumber<1665.15)
         {
-           /* NSLog(@"PerfectTimeX_mode %@", arg1); */
             id val = [arg1 valueForKeyPath : @"style"];
-           /* NSLog(@"PerfectTimeX_mode %@", val); */
-            BOOL success = true; /* 白色 */
+            BOOL success = true; 
             if ([val isKindOfClass :[NSNumber class ]])
             {
                 success = [val boolValue];
@@ -309,43 +308,30 @@ static NSMutableAttributedString* getTimeStr(NSDate *nowDate)
     }
 }
 
--(void) setText : (NSString *) text
-{
-    if ([text containsString : @":"])
-    {
-        //CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+-(void) setText : (NSString *) text {
+    if ([text containsString : @":"]) {
         self.textAlignment	= textAlignment;
         self.numberOfLines	= 0;
-        /* NSLog(@"PerfectTimeX setText %@", text); */
+        
         NSDate *nowDate = [NSDate date];
-        /* 初始化NSMutableAttributedString */
+       
         self.attributedText = getTimeStr(nowDate);
-        //CFAbsoluteTime linkTime = (CFAbsoluteTimeGetCurrent() - startTime);
-        //NSLog(@"PerfectTimeX Linked in %f ms", linkTime * 1000.0);
-    }else {
-        /* //NSLog(@"PerfectTimeX ORIG %@", text); */
+       
+    } else {
+        
         %orig(text);
     }
 }
+
 %end
+
 
 %hook _UIStatusBarIndicatorLocationItem
 
 - (id) applyUpdate : (id) arg1 toDisplayItem : (id) arg2 {
-    /*
-     * set it to hidden
-     * id res = %orig;
-     * id val = [arg2 valueForKeyPath : @"enabled"];
-     * if ([val isKindOfClass :[NSNumber class]])
-     * {
-     * BOOL success = [val boolValue];
-     * //NSLog(@"PerfectTimeX_IndicatorLocation %d", success);
-     * }*/
-    
-    if (showLocation)
-    {
+    if (showLocation) {
         return(%orig);
-    }else{
+    } else {
         return(nil);
     }
 }
@@ -364,16 +350,14 @@ static NSMutableAttributedString* getTimeStr(NSDate *nowDate)
         CGRect	cgSmall = CGRectMake(0, 0, 32, 16);
         point.y			= 11;
         self.frame		= self.frame.size.width > 28 ? cgBig : cgSmall;
-        self.pulseLayer.frame	= self.frame; /*	= CGRectMake(self.pulseLayer.frame.origin.x, self.pulseLayer.frame.origin.y, self.pulseLayer.frame.size.width*1.171, self.pulseLayer.frame.size.height*1.5); */
+        self.pulseLayer.frame	= self.frame; 
         %orig(point);
     }
 }
 %end
 
 %ctor {
-    /* NSLog(@"PerfectTimeX"); */
     loadPrefs();
-    /* Only initialize tweak if it is enabled and if the current process is homescreen or an app */
     NSArray *args = [[NSProcessInfo processInfo] arguments];
     if (args != nil && args.count != 0)
     {
@@ -388,11 +372,6 @@ static NSMutableAttributedString* getTimeStr(NSDate *nowDate)
                 {
                     %init;
                 }
-            }else{
-                /*
-                 * NSString *processName = [[NSProcessInfo processInfo] processName];
-                 * NSLog(@"PerfectTimeX processName %@", processName);
-                 */
             }
         }
     }
