@@ -1,6 +1,6 @@
  export THEOS_DEVICE_IP = 10.37.1.102
  ARCHS = arm64 arm64e
- export TARGET = iphone:12.1.2:12.1.2
+ export TARGET = iphone:14.0:14.0
 
 # TARGET = simulator:clang::7.0
 # ARCHS = x86_64

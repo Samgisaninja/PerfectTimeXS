@@ -183,6 +183,7 @@ static NSMutableAttributedString* getTimeStr(NSDate *nowDate)
         NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier : language];
         dateFormatter.locale = locale;
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] init];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
         if (enable1 && format1.length > 0)
         {
             UIFont *font = legacyFont ?  [UIFont fontWithName : isBold1 ? @".SFUIText-Semibold" : @".SFUIText" size : fontSize1] :
@@ -198,7 +199,7 @@ static NSMutableAttributedString* getTimeStr(NSDate *nowDate)
             }
             if (breakLine1)
             {
-                ns1 = [ns1 stringByAppendingString : @"\n"];
+                ns1 = [[ns1 stringByAppendingString:@" Z"] stringByAppendingString:@"\n"];
             }
             /* NSLog(@"PerfectTimeX enable1 %@", ns1); */
             
